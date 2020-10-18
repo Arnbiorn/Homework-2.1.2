@@ -7,46 +7,55 @@
 
 import UIKit
 
+enum CurrentLight {
+    case red, yellow, green
+}
+
 class ViewController: UIViewController {
 
     @IBOutlet var redLightView: UIView!
     @IBOutlet var yellowLightView: UIView!
     @IBOutlet var greenLightView: UIView!
+    
     @IBOutlet var turnOnButton: UIButton!
     
+    private var currentLight = CurrentLight.red
+    private let lightisOn: CGFloat = 1
+    private let lightIsOff: CGFloat = 0.3
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        turnOnButton.layer.cornerRadius = 20
-        redLightView.layer.cornerRadius = redLightView.frame.size.width / 2
-        redLightView.alpha = 0.3
-        yellowLightView.layer.cornerRadius = yellowLightView.frame.size.width / 2
-        yellowLightView.alpha = 0.3
-        greenLightView.layer.cornerRadius = greenLightView.frame.size.width / 2
-        greenLightView.alpha = 0.3
+        
+        turnOnButton.layer.cornerRadius = 10
+        
+        redLightView.alpha = lightIsOff
+        yellowLightView.alpha = lightIsOff
+        greenLightView.alpha = lightIsOff
+    }
+    
+    override func viewWillLayoutSubviews() {
+        redLightView.layer.cornerRadius = redLightView.frame.width / 2
+        yellowLightView.layer.cornerRadius = yellowLightView.frame.width / 2
+        greenLightView.layer.cornerRadius = greenLightView.frame.width / 2
     }
     
     @IBAction func turnOnButtonPressed() {
-        guard redLightView.alpha == 1 || yellowLightView.alpha == 1 else {
-            yellowLightView.alpha = 0.3
-            greenLightView.alpha = 0.3
-            redLightView.alpha = 1
-            turnOnButton.setTitle("Next", for: .normal)
-            return
-        }
         
-        guard yellowLightView.alpha == 1 else {
-            redLightView.alpha = 0.3
-            greenLightView.alpha = 0.3
-            yellowLightView.alpha = 1
-            return
-        }
+        turnOnButton.setTitle("NEXT", for: .normal)
         
-        guard greenLightView.alpha == 1 else {
-            yellowLightView.alpha = 0.3
-            redLightView.alpha = 0.3
-            greenLightView.alpha = 1
-            return
+        switch currentLight {
+        case .red:
+            greenLightView.alpha = lightIsOff
+            redLightView.alpha = lightisOn 
+            currentLight = .yellow
+        case .yellow:
+            redLightView.alpha = lightIsOff
+            yellowLightView.alpha = lightisOn
+            currentLight = .green
+        case .green:
+            yellowLightView.alpha = lightIsOff
+            greenLightView.alpha = lightisOn
+            currentLight = .red
         }
     }
 }
